@@ -22,6 +22,7 @@ class Grid {
 
     for (let i = 0; i < objectCount; i++) {
       properties[i] = {};
+      properties[i].cellIdNormalized = i / (objectCount - 1); // Normalize cellId to [0, 1] range
 
       // Assign row and column based on index
       const rowId = Math.floor(i / columnCount);
@@ -48,6 +49,15 @@ class Grid {
 
     const geometry = new THREE.BoxGeometry(cellSize, cellSize, cellThickness);
 
+    const attributes = {
+      aCellIdNormalized: new THREE.InstancedBufferAttribute(
+        new Float32Array(this.cellProperties.map((prop) => prop.cellIdNormalized)),
+        1
+      )
+    };
+
+    geometry.setAttribute("aCellIdNormalized", attributes.aCellIdNormalized);
+
     const material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
@@ -55,6 +65,7 @@ class Grid {
       uniforms: {
         uZPositionRange: { value: this.gridProperties.zPositionRange ?? new THREE.Vector2(0, 0) },
         uAnimationProgress: { value: 0 },
+        uAnimationMaxDelay: { value: 0.9 }, // Maxium delay for the animation in % of duration.
       },
     });
 

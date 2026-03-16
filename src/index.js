@@ -99,6 +99,18 @@ pane.registerPlugin(EssentialsPlugin);
 const animationFolder = pane.addFolder({ title: 'Animation' });
 
 // Add Progress Slider to control animation progress
+const animationDelay = animationFolder.addBlade({
+  view: 'slider',
+  label: 'Max Delay',
+  value: grid.material.uniforms.uAnimationMaxDelay.value,
+  min: 0.05,
+  max: 1,
+  step: 0.01,
+});
+animationDelay.on('change', (ev) => {
+  grid.material.uniforms.uAnimationMaxDelay.value = ev.value;
+});
+
 const progressSlider = animationFolder.addBlade({
   view: 'slider',
   label: 'Progress',
