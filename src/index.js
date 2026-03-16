@@ -3,6 +3,8 @@ import './css/base.css';
 
 import * as THREE from "three";
 import Grid from "./Grid/Grid.js";
+import { Pane } from 'tweakpane';
+import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 
 //Setup scene
 const scene = new THREE.Scene();
@@ -77,6 +79,7 @@ const grid = new Grid({
   columnCount: 400,
   cellSize: 1,
   cellThickness: 0.5,
+  zPositionRange: new THREE.Vector2(20, -20),
 });
 grid.showAt(scene);
 
@@ -87,6 +90,27 @@ const animateLoop = () => {
   requestAnimationFrame(animateLoop);
 };
 animateLoop();
+
+// Init Tweakpane
+const pane = new Pane({ title: 'Settings', expanded: true });
+pane.registerPlugin(EssentialsPlugin);
+
+// Create Animation Folder
+const animationFolder = pane.addFolder({ title: 'Animation' });
+
+// Add Progress Slider to control animation progress
+const progressSlider = animationFolder.addBlade({
+  view: 'slider',
+  label: 'Progress',
+  value: 0,
+  min: 0,
+  max: 1,
+  step: 0.01,
+});
+progressSlider.on('change', (ev) => {
+  // Update the shader uniform with the new animation progress value
+  grid.material.uniforms.uAnimationProgress.value = ev.value;
+});
 
 
 

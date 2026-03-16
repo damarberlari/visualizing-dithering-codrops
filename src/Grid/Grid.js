@@ -51,6 +51,11 @@ class Grid {
     const material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
+      // Define uniforms for the shader
+      uniforms: {
+        uZPositionRange: { value: this.gridProperties.zPositionRange ?? new THREE.Vector2(0, 0) },
+        uAnimationProgress: { value: 0 },
+      },
     });
 
     const mesh = new THREE.InstancedMesh(
