@@ -37,6 +37,8 @@ class Grid {
       properties[i].x = x;
       properties[i].y = y;
       properties[i].z = z;
+      properties[i].rowIdNormalized = rowId / (rowCount - 1);
+      properties[i].columnIdNormalized = columnId / (columnCount - 1);
 
     }
 
@@ -53,15 +55,27 @@ class Grid {
       aCellIdNormalized: new THREE.InstancedBufferAttribute(
         new Float32Array(this.cellProperties.map((prop) => prop.cellIdNormalized)),
         1
-      )
+      ),
+      aRowIdNormalized: new THREE.InstancedBufferAttribute(
+        new Float32Array(this.cellProperties.map((prop) => prop.rowIdNormalized)),
+        1
+      ),
+      aColumnIdNormalized: new THREE.InstancedBufferAttribute(
+        new Float32Array(this.cellProperties.map((prop) => prop.columnIdNormalized)),
+        1
+      ),
     };
 
     geometry.setAttribute("aCellIdNormalized", attributes.aCellIdNormalized);
+    geometry.setAttribute("aRowIdNormalized", attributes.aRowIdNormalized);
+    geometry.setAttribute("aColumnIdNormalized", attributes.aColumnIdNormalized);
 
     const material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
-      // Define uniforms for the shader
+      defines: {
+        DELAY_TYPE: 1,
+      },
       uniforms: {
         uZPositionRange: { value: this.gridProperties.zPositionRange ?? new THREE.Vector2(0, 0) },
         uAnimationProgress: { value: 0 },

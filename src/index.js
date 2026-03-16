@@ -98,6 +98,25 @@ pane.registerPlugin(EssentialsPlugin);
 // Create Animation Folder
 const animationFolder = pane.addFolder({ title: 'Animation' });
 
+//Add Dropdown to select delay type
+const delayTypeController = animationFolder.addBlade({
+  view: 'list',
+  label: 'Delay Type',
+  options: {
+    'Cell by Cell': 1,
+    'Row by Row': 2,
+    'Column by Column': 3,
+    'Random': 4,
+    'Corner to Corner': 5,
+  },
+  value: grid.material.defines.DELAY_TYPE,
+});
+
+delayTypeController.on('change', (ev) => {
+  grid.material.defines.DELAY_TYPE = ev.value;
+  grid.material.needsUpdate = true;
+});
+
 // Add Progress Slider to control animation progress
 const animationDelay = animationFolder.addBlade({
   view: 'slider',
