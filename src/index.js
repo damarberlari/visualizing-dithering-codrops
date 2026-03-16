@@ -2,6 +2,7 @@ import './css/style.css';
 import './css/base.css';
 
 import * as THREE from "three";
+import Grid from "./Grid/Grid.js";
 
 //Setup scene
 const scene = new THREE.Scene();
@@ -19,6 +20,16 @@ const cameraAnchor = new THREE.Group();
 cameraAnchor.name = "cameraAnchor";
 cameraAnchor.add(camera);
 scene.add(cameraAnchor);
+
+//Set camera zoom and update projection matrix
+camera.zoom = 0.9;
+camera.updateProjectionMatrix();
+
+//Set camera rotation
+//Camera shot from above and a bit from the side 
+cameraAnchor.rotation.reorder("YXZ");
+cameraAnchor.rotation.y = Math.PI * 0.25;
+cameraAnchor.rotation.x = -Math.PI * 0.15;
 
 //Setup renderer
 const canvas = document.querySelector("canvas.webgl");
@@ -58,6 +69,16 @@ const resize = (width, height, pixelRatio) => {
 
 //Init resize function for the 1st time
 resize(window.innerWidth, window.innerHeight, window.devicePixelRatio);
+
+//Init grid and show it on the scene
+const grid = new Grid({
+  name: "grid",
+  rowCount: 400,
+  columnCount: 400,
+  cellSize: 1,
+  cellThickness: 0.5,
+});
+grid.showAt(scene);
 
 
 // Set animation Loop to render the scene
