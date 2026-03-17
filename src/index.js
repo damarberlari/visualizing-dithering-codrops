@@ -83,6 +83,7 @@ const grid = new Grid({
   gridType: 1,
   image: imageUrl, // Path to the image to be used in the grid
   zPositionRange: new THREE.Vector2(20, -20),
+  cellScaleRange: new THREE.Vector2(1, 1), // property to control cell scale animation
 });
 grid.showAt(scene);
 
@@ -93,7 +94,8 @@ const thresholdMapGrid = new Grid({
   cellSize: 1,
   cellThickness: 0.1,
   gridType: 2,
-  zPositionRange: new THREE.Vector2(0, 0),
+  zPositionRange: new THREE.Vector2(0, -20),
+  cellScaleRange: new THREE.Vector2(1, 0), // property to control cell scale animation
 });
 thresholdMapGrid.showAt(scene);
 
@@ -185,6 +187,9 @@ const delayTypeController = animationFolder.addBlade({
 delayTypeController.on('change', (ev) => {
   grid.material.defines.DELAY_TYPE = ev.value;
   grid.material.needsUpdate = true;
+
+  thresholdMapGrid.material.defines.DELAY_TYPE = ev.value;
+  thresholdMapGrid.material.needsUpdate = true;
 });
 
 // Add Progress Slider to control animation progress
@@ -198,6 +203,7 @@ const animationDelay = animationFolder.addBlade({
 });
 animationDelay.on('change', (ev) => {
   grid.material.uniforms.uAnimationMaxDelay.value = ev.value;
+  thresholdMapGrid.material.uniforms.uAnimationMaxDelay.value = ev.value;
 });
 
 const progressSlider = animationFolder.addBlade({
@@ -211,6 +217,7 @@ const progressSlider = animationFolder.addBlade({
 progressSlider.on('change', (ev) => {
   // Update the shader uniform with the new animation progress value
   grid.material.uniforms.uAnimationProgress.value = ev.value;
+  thresholdMapGrid.material.uniforms.uAnimationProgress.value = ev.value;
 });
 
 
