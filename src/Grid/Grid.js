@@ -173,7 +173,8 @@ class Grid {
         uZPositionRange: { value: this.gridProperties.zPositionRange ?? new THREE.Vector2(0, 0) },
         uCellScaleRange: { value: this.gridProperties.cellScaleRange ?? new THREE.Vector2(1, 1) },
         uAnimationProgress: { value: 0 },
-        uAnimationMaxDelay: { value: 0.9 }, // Maxium delay for the animation in % of duration.
+        uAnimationMinDelay: { value: this.gridProperties.animationMinDelay ?? 0 }, // Minimum delay for the animation in % of duration.
+        uAnimationMaxDelay: { value: this.gridProperties.animationMaxDelay ?? 0.9 }, // Maxium delay for the animation in % of duration.
         uTexture: { value: null }, // Placeholder for texture uniform
       },
     });

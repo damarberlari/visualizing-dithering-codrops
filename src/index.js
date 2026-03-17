@@ -84,6 +84,8 @@ const grid = new Grid({
   image: imageUrl, // Path to the image to be used in the grid
   zPositionRange: new THREE.Vector2(20, -20),
   cellScaleRange: new THREE.Vector2(1, 1), // property to control cell scale animation
+  animationMinDelay: 0, // property for minimum animation delay
+  animationMaxDelay: 0.9, // property for maximum animation delay
 });
 grid.showAt(scene);
 
@@ -96,6 +98,8 @@ const thresholdMapGrid = new Grid({
   gridType: 2,
   zPositionRange: new THREE.Vector2(0, -20),
   cellScaleRange: new THREE.Vector2(1, 0), // property to control cell scale animation
+  animationMinDelay: 0.05, // property for minimum animation delay
+  animationMaxDelay: 0.95, // property for maximum animation delay
 });
 thresholdMapGrid.showAt(scene);
 
@@ -203,7 +207,10 @@ const animationDelay = animationFolder.addBlade({
 });
 animationDelay.on('change', (ev) => {
   grid.material.uniforms.uAnimationMaxDelay.value = ev.value;
-  thresholdMapGrid.material.uniforms.uAnimationMaxDelay.value = ev.value;
+
+  const animationDuration = 1.0 - ev.value;
+  thresholdMapGrid.material.uniforms.uAnimationMinDelay.value = animationDuration * 0.5;
+  thresholdMapGrid.material.uniforms.uAnimationMaxDelay.value = ev.value + animationDuration * 0.5;
 });
 
 const progressSlider = animationFolder.addBlade({

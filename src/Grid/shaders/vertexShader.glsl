@@ -1,6 +1,7 @@
 uniform vec2 uZPositionRange; // Range for z position animation (start and end)
 uniform vec2 uCellScaleRange; // Range for cell scale animation (start and end)
 uniform float uAnimationProgress; // Animation progress (0.0 to 1.0) to control the z position animation
+uniform float uAnimationMinDelay; // Minimum delay for the animation.
 uniform float uAnimationMaxDelay; // Maxium delay for the animation.
 uniform sampler2D uTexture; // Texture uniform to sample the image color
 
@@ -45,7 +46,7 @@ void main() {
         float delayFactor = 0.0;
     #endif
     
-    float animationStart = delayFactor * uAnimationMaxDelay;
+    float animationStart = mix(uAnimationMinDelay, uAnimationMaxDelay, delayFactor);
     float animationDuration = 1.0 - uAnimationMaxDelay;
     float animationEnd = animationStart + animationDuration;
 
@@ -85,7 +86,6 @@ void main() {
     float cellScaleEnd = uCellScaleRange.y;
     float cellScaleAnimationProgress = smoothstep(animationStart, animationEnd, uAnimationProgress);
     float cellScale = mix(cellScaleStart, cellScaleEnd, cellScaleAnimationProgress);
-    
     vec3 cellLocalPosition = vec3(position);
     cellLocalPosition *= cellScale;
 
