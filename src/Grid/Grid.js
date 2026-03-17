@@ -167,6 +167,7 @@ class Grid {
       fragmentShader,
       defines: {
         DELAY_TYPE: 1,
+        GRID_TYPE: this.gridProperties.gridType ?? 1,
       },
       uniforms: {
         uZPositionRange: { value: this.gridProperties.zPositionRange ?? new THREE.Vector2(0, 0) },

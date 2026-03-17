@@ -48,24 +48,38 @@ void main() {
     float animationDuration = 1.0 - uAnimationMaxDelay;
     float animationEnd = animationStart + animationDuration;
 
-    // Sample the texture to get the color for the current cell
-    float imageColor = texture2D(uTexture, vec2(aColumnIdNormalized, 1.0 - aRowIdNormalized)).r;
-    // Compare the image color with the dithering threshold to determine if the cell should be "white" or "black"
-    float ditheringThreshold = aDitheringThreshold;
-    float ditheredColor = step(ditheringThreshold, imageColor);
+    #ifdef GRID_TYPE
+        #if GRID_TYPE == 1
+            // Image Mode
+            float imageColor = texture2D(uTexture, vec2(aColumnIdNormalized, 1.0 - aRowIdNormalized)).r;
+            float ditheringThreshold = aDitheringThreshold;
+            float ditheredColor = step(ditheringThreshold, imageColor);
 
-    // Calculate the progress of the color animation for each cell
-    float colorAnimationProgress = smoothstep(animationStart, animationEnd, uAnimationProgress);
-    
-    // Change the color of the cell based on the calculated animation progress,
-    float finalColor = mix(imageColor, ditheredColor, colorAnimationProgress);
+            float colorAnimationStart = animationStart + animationDuration * 0.5; // Start color animation halfway through the z-position animation
+            float colorAnimationEnd = colorAnimationStart + 0.01; // End color animation at the same time as z-position animation
 
-    //Add border
-    float borderThreshold = 0.005; // Adjust this value to control the thickness of the border
-    float borderX = step(aColumnIdNormalized, borderThreshold) + step(1.0 - borderThreshold, aColumnIdNormalized);
-    float borderY = step(aRowIdNormalized, borderThreshold) + step(1.0 - borderThreshold, aRowIdNormalized);
-    float isBorder = clamp(borderX + borderY, 0.0, 1.0);
-    finalColor = mix(finalColor, 0.0, isBorder);
+            float colorAnimationProgress = smoothstep(colorAnimationStart, colorAnimationEnd, uAnimationProgress);
+
+            float finalColor = mix(imageColor, ditheredColor, colorAnimationProgress);
+
+            //Add border
+            float borderThreshold = 0.005; // Adjust this value to control the thickness of the border
+            float borderX = step(aColumnIdNormalized, borderThreshold) + step(1.0 - borderThreshold, aColumnIdNormalized);
+            float borderY = step(aRowIdNormalized, borderThreshold) + step(1.0 - borderThreshold, aRowIdNormalized);
+            float isBorder = clamp(borderX + borderY, 0.0, 1.0);
+            finalColor = mix(finalColor, 0.0, isBorder);
+        #elif GRID_TYPE == 2
+            // Threshold Map Mode
+            float finalColor = aDitheringThreshold;
+        #else 
+            // Solid Color Mode
+            float finalColor = 0.5;
+        #endif
+    #else
+        // Default to solid color mode if GRID_TYPE is not defined
+        float finalColor = 0.5;
+    #endif
+
 
     vec3 cellLocalPosition = vec3(position);
 

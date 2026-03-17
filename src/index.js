@@ -80,10 +80,23 @@ const grid = new Grid({
   columnCount: 400,
   cellSize: 1,
   cellThickness: 0.5,
+  gridType: 1,
   image: imageUrl, // Path to the image to be used in the grid
   zPositionRange: new THREE.Vector2(20, -20),
 });
 grid.showAt(scene);
+
+const thresholdMapGrid = new Grid({
+  name: "thresholdMapGrid",
+  rowCount: 400,
+  columnCount: 400,
+  cellSize: 1,
+  cellThickness: 0.1,
+  gridType: 2,
+  zPositionRange: new THREE.Vector2(0, 0),
+});
+thresholdMapGrid.showAt(scene);
+
 
 
 // Set animation Loop to render the scene
@@ -96,6 +109,37 @@ animateLoop();
 // Init Tweakpane
 const pane = new Pane({ title: 'Settings', expanded: true });
 pane.registerPlugin(EssentialsPlugin);
+
+// Create Image Grid Settings Folder
+const imageGridFolder = pane.addFolder({ title: 'Image Grid' });
+
+const showImageGrid = imageGridFolder.addBinding({show: true}, 'show', {
+  label: 'Show',
+});
+
+showImageGrid.on('change', (ev) => {
+  if (ev.value) {
+    grid.showAt(scene);
+  } else {
+    grid.hideFrom(scene);
+  }
+});
+
+// Create Threshold Map Grid Settings Folder
+const thresholdMapGridFolder = pane.addFolder({ title: 'Threshold Map Grid' });
+
+const showThresholdMapGrid = thresholdMapGridFolder.addBinding({show: true}, 'show', {
+  label: 'Show',
+});
+
+showThresholdMapGrid.on('change', (ev) => {
+  if (ev.value) {
+    thresholdMapGrid.showAt(scene);
+  } else {
+    thresholdMapGrid.hideFrom(scene);
+  }
+});
+
 
 // Create Dithering Folder
 const ditheringFolder = pane.addFolder({ title: 'Dithering' });
@@ -117,6 +161,7 @@ const ditheringThresholdController = ditheringFolder.addBinding(activeThresholdM
 
 ditheringThresholdController.on('change', (ev) => {
   grid.geometry.setAttribute("aDitheringThreshold", grid.attributes.aDitheringThresholds[ev.value]);
+  thresholdMapGrid.geometry.setAttribute("aDitheringThreshold", thresholdMapGrid.attributes.aDitheringThresholds[ev.value]);
 });
 
 
