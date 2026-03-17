@@ -1,10 +1,10 @@
-# Visualizing Dithering Process with Three.js and WebGL
+# Visualizing Dithering with Three.js
 
-A visualization showing the process of dithering, made with Three.js and WebGL.
+A visualization showing the process of dithering, made with Three.js.
 
-![Image Title](https://tympanus.net/codrops/wp-content/uploads/2026/02/Codrops-Dithering-Thumbnail-scaled.png)
+![Image Title](https://tympanus.net/codrops/wp-content/uploads/2026/03/thumbnail-2.jpg)
 
-[Article on Codrops](https://tympanus.net/codrops/?p=)
+[Article on Codrops](https://tympanus.net/codrops/?p=108906)
 
 [Demo](https://tympanus.net/Tutorials/.../)
 
