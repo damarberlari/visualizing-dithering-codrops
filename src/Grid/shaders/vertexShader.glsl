@@ -1,10 +1,13 @@
 uniform vec2 uZPositionRange; // Range for z position animation (start and end)
 uniform float uAnimationProgress; // Animation progress (0.0 to 1.0) to control the z position animation
 uniform float uAnimationMaxDelay; // Maxium delay for the animation.
+uniform sampler2D uTexture; // Texture uniform to sample the image color
 
 attribute float aRowIdNormalized; // Normalized row ID attribute
 attribute float aColumnIdNormalized; // Normalized column ID attribute
 attribute float aCellIdNormalized; // Normalized cell ID attribute
+
+varying vec3 vColor; // Varying to pass the color to the fragment shader
 
 float random (vec2 st) {
     return fract(sin(dot(st.xy,
@@ -44,6 +47,17 @@ void main() {
     float animationDuration = 1.0 - uAnimationMaxDelay;
     float animationEnd = animationStart + animationDuration;
 
+    // Sample the texture to get the color for the current cell
+    float imageColor = texture2D(uTexture, vec2(aColumnIdNormalized, 1.0 - aRowIdNormalized)).r;
+    float finalColor = imageColor;
+
+    //Add border
+    float borderThreshold = 0.005; // Adjust this value to control the thickness of the border
+    float borderX = step(aColumnIdNormalized, borderThreshold) + step(1.0 - borderThreshold, aColumnIdNormalized);
+    float borderY = step(aRowIdNormalized, borderThreshold) + step(1.0 - borderThreshold, aRowIdNormalized);
+    float isBorder = clamp(borderX + borderY, 0.0, 1.0);
+    finalColor = mix(finalColor, 0.0, isBorder);
+
     vec3 cellLocalPosition = vec3(position);
 
     vec4 cellWorldPosition = modelMatrix * instanceMatrix * vec4(cellLocalPosition, 1.0);
@@ -60,4 +74,6 @@ void main() {
     cellWorldPosition.z += mix(zPositionStart, zPositionEnd, zPositionAnimationProgress);
 
     gl_Position = projectionMatrix * viewMatrix * cellWorldPosition;
+
+    vColor = vec3(finalColor);
 }

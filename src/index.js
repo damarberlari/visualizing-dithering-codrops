@@ -1,5 +1,6 @@
 import './css/style.css';
 import './css/base.css';
+import imageUrl from './image/dithering_object.jpg';
 
 import * as THREE from "three";
 import Grid from "./Grid/Grid.js";
@@ -79,6 +80,7 @@ const grid = new Grid({
   columnCount: 400,
   cellSize: 1,
   cellThickness: 0.5,
+  image: imageUrl, // Path to the image to be used in the grid
   zPositionRange: new THREE.Vector2(20, -20),
 });
 grid.showAt(scene);

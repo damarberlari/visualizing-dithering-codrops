@@ -24,7 +24,6 @@ class Grid {
       properties[i] = {};
       properties[i].cellIdNormalized = i / (objectCount - 1); // Normalize cellId to [0, 1] range
 
-      // Assign row and column based on index
       const rowId = Math.floor(i / columnCount);
       const columnId = i % columnCount;
 
@@ -80,8 +79,22 @@ class Grid {
         uZPositionRange: { value: this.gridProperties.zPositionRange ?? new THREE.Vector2(0, 0) },
         uAnimationProgress: { value: 0 },
         uAnimationMaxDelay: { value: 0.9 }, // Maxium delay for the animation in % of duration.
+        uTexture: { value: null }, // Placeholder for texture uniform
       },
     });
+
+    // Load image to material.uniforms.uTexture if the image path is provided
+    if (this.gridProperties.image) {
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load(
+        this.gridProperties.image,
+        (texture) => {
+          texture.colorSpace = THREE.SRGBColorSpace;
+          material.uniforms.uTexture.value = texture;
+          material.needsUpdate = true;
+        }
+      );
+    }
 
     const mesh = new THREE.InstancedMesh(
       geometry,
