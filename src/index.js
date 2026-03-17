@@ -97,6 +97,29 @@ animateLoop();
 const pane = new Pane({ title: 'Settings', expanded: true });
 pane.registerPlugin(EssentialsPlugin);
 
+// Create Dithering Folder
+const ditheringFolder = pane.addFolder({ title: 'Dithering' });
+
+const activeThresholdMaps = {
+  value: 'bayer4x4',
+};
+
+const ditheringThresholdController = ditheringFolder.addBinding(activeThresholdMaps, 'value', {
+  view: 'radiogrid',
+  groupName: 'ditheringThreshold',
+  size: [2, 2],
+  cells: (x, y) => ({
+    title: `${grid.thresholdMaps[y * 2 + x].name}`,
+    value: grid.thresholdMaps[y * 2 + x].id,
+  }),
+  label: 'Threshold Map',
+})
+
+ditheringThresholdController.on('change', (ev) => {
+  grid.geometry.setAttribute("aDitheringThreshold", grid.attributes.aDitheringThresholds[ev.value]);
+});
+
+
 // Create Animation Folder
 const animationFolder = pane.addFolder({ title: 'Animation' });
 

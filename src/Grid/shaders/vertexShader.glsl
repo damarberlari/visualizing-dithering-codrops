@@ -6,6 +6,7 @@ uniform sampler2D uTexture; // Texture uniform to sample the image color
 attribute float aRowIdNormalized; // Normalized row ID attribute
 attribute float aColumnIdNormalized; // Normalized column ID attribute
 attribute float aCellIdNormalized; // Normalized cell ID attribute
+attribute float aDitheringThreshold; // Dithering threshold attribute for each cell
 
 varying vec3 vColor; // Varying to pass the color to the fragment shader
 
@@ -49,7 +50,15 @@ void main() {
 
     // Sample the texture to get the color for the current cell
     float imageColor = texture2D(uTexture, vec2(aColumnIdNormalized, 1.0 - aRowIdNormalized)).r;
-    float finalColor = imageColor;
+    // Compare the image color with the dithering threshold to determine if the cell should be "white" or "black"
+    float ditheringThreshold = aDitheringThreshold;
+    float ditheredColor = step(ditheringThreshold, imageColor);
+
+    // Calculate the progress of the color animation for each cell
+    float colorAnimationProgress = smoothstep(animationStart, animationEnd, uAnimationProgress);
+    
+    // Change the color of the cell based on the calculated animation progress,
+    float finalColor = mix(imageColor, ditheredColor, colorAnimationProgress);
 
     //Add border
     float borderThreshold = 0.005; // Adjust this value to control the thickness of the border
